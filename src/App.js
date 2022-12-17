@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import Singup from "./components/Singup";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Login from "./components/Login";
+import NewPost from "./components/NewPost";
+import DisplayPost from "./components/DisplayPost";
+import MakeComment from "./components/MakeComment";
+import Main from "./layout/Main";
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Main></Main>,
+      children: [
+        {
+          path: "/",
+          element: <Singup></Singup>,
+        },
+        {
+          path: "/login",
+          element: <Login></Login>,
+        },
+        {
+          path: "/post",
+          element: <NewPost></NewPost>,
+        },
+        {
+          path: "/displaypost",
+          element: <DisplayPost></DisplayPost>,
+          loader: () => fetch("https://mern-stack-server-one.vercel.app/posts"),
+        },
+        {
+          path: "/makeComment/:id",
+          element: <MakeComment></MakeComment>,
+          loader: ({ params }) =>
+            fetch(
+              `https://mern-stack-server-one.vercel.app/posts/${params.id}`
+            ),
+        },
+      ],
+    },
+  ]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <RouterProvider router={router}></RouterProvider>
     </div>
   );
 }
